@@ -1,5 +1,5 @@
 
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApp, getApps } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
 /**
@@ -17,8 +17,8 @@ const firebaseConfig = {
   measurementId: (window as any).process?.env?.FIREBASE_MEASUREMENT_ID || "G-LL3S3TJN6B"
 };
 
-// Inizializzazione singola dell'app e del database
-const app = initializeApp(firebaseConfig);
+// Initialize Firebase safely
+const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const db = getFirestore(app);
 
 export { db };
