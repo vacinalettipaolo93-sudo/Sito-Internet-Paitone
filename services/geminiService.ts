@@ -1,7 +1,9 @@
 
 import { GoogleGenAI } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+// Accediamo alla chiave API in modo sicuro per il browser evitando ReferenceError
+const apiKey = (window as any).process?.env?.API_KEY || '';
+const ai = new GoogleGenAI({ apiKey });
 
 const SYSTEM_PROMPT = `
 Sei l'assistente virtuale del Paitone Sport Center.
@@ -20,6 +22,11 @@ Rispondi in modo cordiale, professionale e in italiano. Se l'utente chiede di pr
 `;
 
 export async function askAssistant(question: string): Promise<string> {
+  if (!apiKey) {
+    console.warn("API_KEY non configurata per Gemini.");
+    return "Ciao! Sono l'assistente di Paitone Sport Center. Al momento il mio sistema di intelligenza artificiale è in fase di configurazione, ma puoi comunque scriverci o prenotare tramite il sito!";
+  }
+
   try {
     const response = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
